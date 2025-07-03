@@ -1,55 +1,77 @@
 const screen =  document.querySelector('.screen');
 const digits = document.querySelectorAll('.number');
 const operators = document.querySelectorAll('.operator');
-const equal = document.querySelector('.equal');
+const equalButton = document.querySelector('.equal');
+const clearButton = document.querySelector('.ac');
+const deleleButton = document.querySelector('.del');
+let number = '';
 
-let number = "";
-let expression = [];
+const operation = {
+    number: null,
+    operator: null,
+    evaluate: function(num2) {
+        switch(this.operator) {
+            case '+':
+                return this.number + num2;
+            case '-':
+                return this.number - num2;
+            case '*':
+                return this.number * num2;
+            case '/':
+                return Math.floor(this.number / num2);
+            default:
+                return number;
+        }
+    }
+}
 
 digits.forEach(digit => {
     digit.addEventListener('click', () => {
         number += digit.value;
         screen.textContent = number;
+        
     });
 });
 
 operators.forEach(operator => {
     operator.addEventListener('click', () => {
-        expression.push(number);
 
-        if(expression.length === 3) {
-            let result = evaluate(expression);
-            screen.textContent = result;
-            expression = [];
-            expression.push(result)
-        } else {
-            screen.textContent = "";
+        if (number != '') {
+            if (operation.number === null) {
+                operation.number = parseInt(number);
+            }
+            else {
+                let result = operation.evaluate(parseInt(number));
+                operation.number = result;
+                screen.textContent = result;
+            }
         }
 
-        expression[1] = operator.value;
-        number = "";
+
+        number = '';
+        operation.operator = operator.value;
+
     });
 });
 
 
-equal.addEventListener('click', () => {
-    expression.push(number);
-    screen.textContent = evaluate(expression);    
+equalButton.addEventListener('click', () => {
+    let result = operation.evaluate(parseInt(number))
+    screen.textContent = result;
 })
 
-function evaluate(express) {
-    let num1 = parseInt(express[0]);
-    let num2 = parseInt(express[2]);
+clearButton.addEventListener('click', () => {
+    operation.number = null;
+    operation.operator = null;
+    number = '';
+    screen.textContent = number;
+})
 
-    switch(express[1]) {
-        case '+':
-            return num1 + num2;
-        case '-':
-            return num1 - num2;
-        case '*':
-            return num1 * num2;
-        case '/':
-            return Math.floor(num1 / num2);
-    }
-}
+deleleButton.addEventListener('click', () => {
+    number = number.slice(0, number.length - 1);
+    screen.textContent = number;
+})
+
+
+
 
