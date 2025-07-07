@@ -7,19 +7,20 @@ const deleleButton = document.querySelector('.del');
 let number = '';
 
 const operation = {
-    number1: null,
+    number: null,
     operator: null,
-    number2: null,
-    evaluate: function() {
+    evaluate: function(num2) {
         switch(this.operator) {
             case '+':
-                return this.number1 + this.number2;
+                return this.number + num2;
             case '-':
-                return this.number - this.number2;
+                return this.number - num2;
             case '*':
-                return this.number * this.number2;
+                return this.number * num2;
             case '/':
                 return Math.floor(this.number / num2);
+            default:
+                return number;
         }
     }
 }
@@ -34,18 +35,22 @@ digits.forEach(digit => {
 
 operators.forEach(operator => {
     operator.addEventListener('click', () => {
-        if (number === '') return;
-        
-        number = number.includes('\.')? parseFloat(number): parseInt(number);
 
-        if (operation.number1 === null) {
-            operation.number1 = number;
-        } else if (operation.number2 === null) {
-            operation.number2 = number;
-        } 
+        if (number != '') {
+            if (operation.number === null) {
+                operation.number = parseInt(number);
+            }
+            else {
+                let result = operation.evaluate(parseInt(number));
+                operation.number = result;
+                screen.textContent = result;
+            }
+        }
+
 
         number = '';
         operation.operator = operator.value;
+
     });
 });
 
@@ -56,13 +61,16 @@ equalButton.addEventListener('click', () => {
 })
 
 clearButton.addEventListener('click', () => {
-    operation.number1 = null;
-    operation.number2 = null;
+    operation.number = null;
     operation.operator = null;
     number = '';
     screen.textContent = number;
 })
 
+deleleButton.addEventListener('click', () => {
+    number = number.slice(0, number.length - 1);
+    screen.textContent = number;
+})
 
 
 
