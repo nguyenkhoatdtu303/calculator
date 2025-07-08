@@ -1,9 +1,9 @@
 const screen =  document.querySelector('.screen');
 const digits = document.querySelectorAll('.number');
 const operators = document.querySelectorAll('.operator');
-const equalButton = document.querySelector('.equal');
 const clearButton = document.querySelector('.ac');
 const deleleButton = document.querySelector('.del');
+const equalButton = document.querySelector('.equal');
 let number = '';
 
 const operation = {
@@ -18,7 +18,7 @@ const operation = {
             case '*':
                 return this.number * num2;
             case '/':
-                return Math.floor(this.number / num2);
+                return this.number / num2;
             default:
                 return number;
         }
@@ -29,36 +29,43 @@ digits.forEach(digit => {
     digit.addEventListener('click', () => {
         number += digit.value;
         screen.textContent = number;
-        
     });
 });
 
 operators.forEach(operator => {
     operator.addEventListener('click', () => {
-
-        if (number != '') {
-            if (operation.number === null) {
-                operation.number = parseInt(number);
-            }
-            else {
-                let result = operation.evaluate(parseInt(number));
-                operation.number = result;
-                screen.textContent = result;
-            }
+        if (number === '') {
+            operation.operator = operator.value;    
+            return;
+        }
+        
+        number = number.includes('\.')? parseFloat(number): parseInt(number);
+    
+        if (operation.number === null) {
+            operation.number = number;
+        }else {
+            equal();
         }
 
-
-        number = '';
         operation.operator = operator.value;
-
+        number = '';
     });
 });
 
+function equal() {
+    let result = operation.evaluate(number);
+    result = (result % 1 !== 0)? result.toFixed(3): result;
+    operation.number = result;
+    screen.textContent = result;
+}
 
 equalButton.addEventListener('click', () => {
-    let result = operation.evaluate(parseInt(number))
-    screen.textContent = result;
-})
+    if (number === '') return;
+    number = number.includes('\.')? parseFloat(number): parseInt(number);
+    
+    equal()
+    number = '';
+});
 
 clearButton.addEventListener('click', () => {
     operation.number = null;
