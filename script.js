@@ -5,6 +5,7 @@ const clearButton = document.querySelector('.ac');
 const deleleButton = document.querySelector('.del');
 const equalButton = document.querySelector('.equal');
 let number = '';
+let result; 
 
 const operation = {
     number: null,
@@ -38,7 +39,7 @@ operators.forEach(operator => {
             operation.operator = operator.value;    
             return;
         }
-        
+
         number = number.includes('\.')? parseFloat(number): parseInt(number);
     
         if (operation.number === null) {
@@ -53,9 +54,9 @@ operators.forEach(operator => {
 });
 
 function equal() {
-    let result = operation.evaluate(number);
+    result = operation.evaluate(number);
     result = (result % 1 !== 0)? result.toFixed(3): result;
-    operation.number = result;
+    operation.number = Number(result);
     screen.textContent = result;
 }
 
