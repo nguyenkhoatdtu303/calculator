@@ -1,41 +1,44 @@
 const operation = {
-    number1: null,
-    number2: null,
+    operand1: null,
+    operand2: null,
     operator: null,
     
     operate: function() {
-        if (this.number1 === null || this.number2 === null) return;
+        if (this.operand1 === null || this.operand2 === null) return;
 
         switch (this.operator) {
             case '+':                
-                return this.number1 + this.number2;
+                return this.operand1 + this.operand2;
             case '-':
-                return this.number1 - this.number2;
+                return this.operand1 - this.operand2;
             case '*':
-                return this.number1 * this.number2;
+                return this.operand1 * this.operand2;
             case '/':
-                return this.number1 / this.number2;
+                if (this.operand2 === 0) {
+                    display('Error!');
+                    clearAll();
+                    return;
+                }
+
+                return this.operand1 / this.operand2;
         }    
     }
 }
 
-const digits = document.querySelectorAll('.number');
-const operators = document.querySelectorAll('.operator')
 const screen = document.querySelector('.screen');
-const clear = document.querySelector('.ac');
-const undo = document.querySelector('.del');
-const equal = document.querySelector('.equal');
 
 // A temporary number to store the number the user click.
 let number = '';
 let result;
 
+const digits = document.querySelectorAll('.number');
 digits.forEach(digit => {
     digit.addEventListener('click', () => { 
-        // if result is being displayed
+        // if result is being displayed and there is no operator like: 2 +
         // enter new number will reset the operation
-        if (operation.operator === null) {
-            operation.number1 = null;
+        if (result != undefined && operation.operator === null) {
+            clearAll();
+            result = undefined;
         }
 
         // In case user enter multiple '.'
@@ -50,30 +53,36 @@ digits.forEach(digit => {
     });
 })
 
-
+const operators = document.querySelectorAll('.operator')
 operators.forEach(operator => {
     operator.addEventListener('click', () => {
         display('');
+
+        // in case user enter multiple operator ex: 1 + - *
+        // so the operator will be the last one
         if (number === '') {
             operation.operator = operator.value;
             return;
         }
 
+        // decide to convert number from text to float or int
         number = (number.includes('\.'))? parseFloat(number): parseInt(number);
 
-        if (operation.number1 === null) operation.number1 = number;
-        else if(operation.number2 === null) operation.number2 = number;
+        if (operation.operand1 === null) {
+            operation.operand1 = number;
+        } else if(operation.operand2 === null) {
+            operation.operand2 = number;
+        }
         
-        // we have 2 two numbers so that we can operate
-        if (operation.number2 != null) {
-            
-            //store the result to display
+        // we have 2 two operands and 1 operator so that we can operate
+        // if we click another operator it will act like equal button
+        // ex: 2 + 3 -
+        if (operation.operand2 !== null) {
             result = calculate();
             display(result);
+            clearAll();
 
-            // store result so that we can keep operate with that result
-            operation.number1 = result;
-            operation.number2 = null;
+            operation.operand1 = result;
         }
 
         number = '';
@@ -81,24 +90,36 @@ operators.forEach(operator => {
     });
 })
 
+const equal = document.querySelector('.equal');
 equal.addEventListener('click', () => {
-    if (number === '' || operation.number1 === null) return;
+    if (number === '' || operation.operand1 === null) return;
 
-    operation.number2 = Number(number);
+    // update operand2 so that we have 2 operand2, we can operate.
+    operation.operand2 = Number(number);
 
     result = calculate();
     display(result);
+    clearAll();
 
-    operation.number1 = result;
-    operation.number2 = null;
-    operation.operator = null;
-    number = '';
+    // if user want to keep operating with the result
+    operation.operand1 = result;
 })
 
+const clear = document.querySelector('.ac');
 clear.addEventListener('click', () => {
     clearAll()
-    display(number);
+    display('');
 });
+
+const undo = document.querySelector('.del');
+undo.addEventListener('click', () => {
+    // in case user undo the result
+    // this will act as clear button
+    if (result != undefined) clearAll();
+
+    else number = number.slice(0, number.length - 1);
+    display(number);
+})
 
 function calculate() {
     let result = operation.operate();
@@ -107,25 +128,75 @@ function calculate() {
 }
 
 function clearAll() {
-    operation.number1 = null;
-    operation.number2 = null;
+    operation.operand1 = null;
+    operation.operand2 = null;
     operation.operator = null;
     number = '';
 }
 
-undo.addEventListener('click', () => {
+const MAX_LENGTH = 16;
+function display(text) {
+    // the max length the screen can display
+    if (text.length === MAX_LENGTH) {
+        text = '';
+        clearAll();
+    } 
 
-    // in case user undo the result
-    // this will act as clear button
-    if (number === '') clearAll();
+    screen.textContent = text;
+}
 
-    else number = number.slice(0, number.length - 1);
+document.addEventListener('keydown', (e) => {
+    let key = e.key;
+    let button;
 
+    switch (key) {
+        case '0':
+            button = key;
+            break;
+        case '1':
+            button = key;
+            break;
+        case '2':
+            button = key;
+            break;
+        case '3':
+            button = key;
+            break;
+        case '4':
+            button = key;
+            break;
+        case '5':
+            button = key;
+            break;
+        case '6':
+            button = key;
+            break;
+        case '7':
+            button = key;
+            break;
+        case '8':
+            button = key;
+            break;
+        case '9':
+            button = key;
+            break;
+        default:
+            break;
+    }
+
+    if (result != undefined && operation.operator === null) {
+        clearAll();
+        result = undefined;
+    }
+
+    if(number.includes('\.')) {
+        if (button === '\.') {
+            button = '';
+        }
+    }
+
+    number += button;
     display(number);
 })
 
-
-function display(number) {
-    screen.textContent = number;
-}
 
