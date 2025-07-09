@@ -189,13 +189,13 @@ document.addEventListener('keydown', (e) => {
             break;
         case '-':
             button = document.getElementById('minute');
-            break;
+            break;  
         case '*':
             button = document.getElementById('multi');
             break;
-        case '/':
+        case '/':   
             button = document.getElementById('divide');    
-        case '=':
+        case '=', 'Enter':
             button = document.querySelector('.equal');
             break;
         case 'Backspace':
