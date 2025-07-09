@@ -145,58 +145,67 @@ function display(text) {
     screen.textContent = text;
 }
 
+let click = new Event('click', {bubble: true, cancelable: true})
 document.addEventListener('keydown', (e) => {
     let key = e.key;
     let button;
 
     switch (key) {
         case '0':
-            button = key;
+            button = document.getElementById('zero');
             break;
         case '1':
-            button = key;
+            button = document.getElementById('one');
             break;
         case '2':
-            button = key;
+            button = document.getElementById('two');
             break;
         case '3':
-            button = key;
+            button = document.getElementById('three');
             break;
         case '4':
-            button = key;
+            button = document.getElementById('four');
             break;
         case '5':
-            button = key;
+            button = document.getElementById('five');
             break;
         case '6':
-            button = key;
+            button = document.getElementById('six');
             break;
         case '7':
-            button = key;
+            button = document.getElementById('seven');
             break;
         case '8':
-            button = key;
+            button = document.getElementById('eigth');
             break;
         case '9':
-            button = key;
+            button = document.getElementById('nine');
+            break;
+        case '.':
+            button = document.getElementById('dot');
+            break;
+        case '+':
+            button = document.getElementById('plus');
+            break;
+        case '-':
+            button = document.getElementById('minute');
+            break;
+        case '*':
+            button = document.getElementById('multi');
+            break;
+        case '/':
+            button = document.getElementById('divide');    
+        case '=':
+            button = document.querySelector('.equal');
+            break;
+        case 'Backspace':
+            button = document.querySelector('.del');
             break;
         default:
             break;
     }
 
-    if (result != undefined && operation.operator === null) {
-        clearAll();
-        result = undefined;
-    }
-
-    if(number.includes('\.')) {
-        if (button === '\.') {
-            button = '';
-        }
-    }
-
-    number += button;
-    display(number);
+    button.dispatchEvent(click);
 })
 
 
