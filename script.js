@@ -32,13 +32,24 @@ let result;
 
 digits.forEach(digit => {
     digit.addEventListener('click', () => { 
+        // if result is being displayed
+        // enter new number will reset the operation
         if (operation.operator === null) {
             operation.number1 = null;
         }
+
+        // In case user enter multiple '.'
+        if(number.includes('\.')) {
+            if (digit.value === '\.') {
+                digit.value = '';
+            }
+        }
+
         number += digit.value;
         display(number);
     });
 })
+
 
 operators.forEach(operator => {
     operator.addEventListener('click', () => {
