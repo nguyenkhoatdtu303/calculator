@@ -76,8 +76,11 @@ clearButton.addEventListener('click', () => {
 })
 
 deleleButton.addEventListener('click', () => {
+    number = screen.textContent;
     number = number.slice(0, number.length - 1);
+    operation.number = Number(number);
     screen.textContent = number;
+    number = '';
 })
 
 
