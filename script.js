@@ -1,88 +1,120 @@
-const screen =  document.querySelector('.screen');
-const digits = document.querySelectorAll('.number');
-const operators = document.querySelectorAll('.operator');
-const clearButton = document.querySelector('.ac');
-const deleleButton = document.querySelector('.del');
-const equalButton = document.querySelector('.equal');
-let number = '';
-let result; 
-
 const operation = {
-    number: null,
+    number1: null,
+    number2: null,
     operator: null,
-    evaluate: function(num2) {
-        switch(this.operator) {
-            case '+':
-                return this.number + num2;
+    
+    operate: function() {
+        if (this.number1 === null || this.number2 === null) return;
+
+        switch (this.operator) {
+            case '+':                
+                return this.number1 + this.number2;
             case '-':
-                return this.number - num2;
+                return this.number1 - this.number2;
             case '*':
-                return this.number * num2;
+                return this.number1 * this.number2;
             case '/':
-                return this.number / num2;
-            default:
-                return number;
-        }
+                return this.number1 / this.number2;
+        }    
     }
 }
 
+const digits = document.querySelectorAll('.number');
+const operators = document.querySelectorAll('.operator')
+const screen = document.querySelector('.screen');
+const clear = document.querySelector('.ac');
+const undo = document.querySelector('.del');
+const equal = document.querySelector('.equal');
+
+// A temporary number to store the number the user click.
+let number = '';
+let result;
+
 digits.forEach(digit => {
-    digit.addEventListener('click', () => {
+    digit.addEventListener('click', () => { 
+        if (operation.operator === null) {
+            operation.number1 = null;
+        }
         number += digit.value;
-        screen.textContent = number;
+        display(number);
     });
-});
+})
 
 operators.forEach(operator => {
     operator.addEventListener('click', () => {
+        display('');
         if (number === '') {
-            operation.operator = operator.value;    
+            operation.operator = operator.value;
             return;
         }
 
-        number = number.includes('\.')? parseFloat(number): parseInt(number);
-    
-        if (operation.number === null) {
-            operation.number = number;
-        }else {
-            equal();
+        number = (number.includes('\.'))? parseFloat(number): parseInt(number);
+
+        if (operation.number1 === null) operation.number1 = number;
+        else if(operation.number2 === null) operation.number2 = number;
+        
+        // we have 2 two numbers so that we can operate
+        if (operation.number2 != null) {
+            
+            //store the result to display
+            result = calculate();
+            display(result);
+
+            // store result so that we can keep operate with that result
+            operation.number1 = result;
+            operation.number2 = null;
         }
 
-        operation.operator = operator.value;
         number = '';
+        operation.operator = operator.value;
     });
-});
+})
 
-function equal() {
-    result = operation.evaluate(number);
-    result = (result % 1 !== 0)? result.toFixed(3): result;
-    operation.number = Number(result);
-    screen.textContent = result;
-}
+equal.addEventListener('click', () => {
+    if (number === '' || operation.number1 === null) return;
 
-equalButton.addEventListener('click', () => {
-    if (number === '') return;
-    number = number.includes('\.')? parseFloat(number): parseInt(number);
-    
-    equal()
-    number = '';
-});
+    operation.number2 = Number(number);
 
-clearButton.addEventListener('click', () => {
-    operation.number = null;
+    result = calculate();
+    display(result);
+
+    operation.number1 = result;
+    operation.number2 = null;
     operation.operator = null;
     number = '';
-    screen.textContent = number;
 })
 
-deleleButton.addEventListener('click', () => {
-    number = screen.textContent;
-    number = number.slice(0, number.length - 1);
-    operation.number = Number(number);
-    screen.textContent = number;
+clear.addEventListener('click', () => {
+    clearAll()
+    display(number);
+});
+
+function calculate() {
+    let result = operation.operate();
+    result = (result % 1 !== 0)? result.toFixed(3): result;
+    return result;
+}
+
+function clearAll() {
+    operation.number1 = null;
+    operation.number2 = null;
+    operation.operator = null;
     number = '';
+}
+
+undo.addEventListener('click', () => {
+
+    // in case user undo the result
+    // this will act as clear button
+    if (number === '') clearAll();
+
+    else number = number.slice(0, number.length - 1);
+
+    display(number);
 })
 
 
-
+function display(number) {
+    screen.textContent = number;
+}
 
