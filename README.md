@@ -5,3 +5,5 @@ I will try to make this calculator as the same as the real calculator. This calc
 In this project I will use some tools and skills that I've learnt such as using HTML to create the structure of the calculator, adding styles to make the calculator like the real one in css file, adding logic in javascript file.
 
 In javascript file. I will get elements and add event to those elements. To support keyboard I will use dispatchEvent().
+
+I will update this project in the near future.
